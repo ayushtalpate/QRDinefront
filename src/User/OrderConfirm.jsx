@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5001";
+
 const OrderConfirm = () => {
   const { tableId } = useParams();
   const navigate = useNavigate();
@@ -9,7 +11,7 @@ const OrderConfirm = () => {
 
   const handleSubmit = async () => {
     try {
-      const response = await fetch("http://localhost:5001/api/orders", {
+      const response = await fetch(`${BACKEND_URL}/api/orders`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -24,10 +26,12 @@ const OrderConfirm = () => {
         localStorage.removeItem("cart");
         navigate(`/table/${tableId}`);
       } else {
-        alert("❌ Something went wrong.");
+        const errorData = await response.json();
+        alert(`❌ Failed to place order: ${errorData.message || "Unknown error"}`);
       }
     } catch (error) {
-      console.error("Order error", error);
+      console.error("Order error:", error);
+      alert("❌ Network error while placing order.");
     }
   };
 
@@ -54,9 +58,13 @@ const OrderConfirm = () => {
                 <div>
                   <strong className="text-dark">{item.name}</strong>
                   <br />
-                  <small className="text-muted">₹{item.price} × {item.quantity}</small>
+                  <small className="text-muted">
+                    ₹{item.price} × {item.quantity}
+                  </small>
                 </div>
-                <span className="fw-bold text-success">₹{item.price * item.quantity}</span>
+                <span className="fw-bold text-success">
+                  ₹{item.price * item.quantity}
+                </span>
               </li>
             ))}
           </ul>
@@ -89,7 +97,7 @@ const OrderConfirm = () => {
               boxShadow: "0px 4px 6px rgba(0,0,0,0.1)",
             }}
           >
-            Place Order
+            ✅ Place Order
           </button>
         </div>
       )}

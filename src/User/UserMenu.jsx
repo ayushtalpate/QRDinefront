@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5001";
+
 const UserMenu = () => {
   const { tableId } = useParams();
   const navigate = useNavigate();
@@ -13,7 +15,7 @@ const UserMenu = () => {
   useEffect(() => {
     const checkExistingOrder = async () => {
       try {
-        const res = await axios.get(`http://localhost:5001/api/orders`);
+        const res = await axios.get(`${BACKEND_URL}/api/orders`);
         const orders = res.data;
 
         const activeOrder = orders.find(
@@ -35,7 +37,7 @@ const UserMenu = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5001/api/menu")
+      .get(`${BACKEND_URL}/api/menu`)
       .then((res) => setMenuItems(res.data))
       .catch((err) => console.error("Error fetching menu", err));
   }, []);
@@ -82,7 +84,7 @@ const UserMenu = () => {
   return (
     <div className="container mt-4">
       <h4 className="text-center mb-4 fw-bold">
-        🍽️ <span className="">Menu - Table {tableId}</span>
+        🍽️ <span>Menu - Table {tableId}</span>
       </h4>
 
       <div className="row">
@@ -92,7 +94,7 @@ const UserMenu = () => {
             <div key={item._id} className="col-6 col-sm-4 col-md-3 mb-4">
               <div className="card shadow-sm border-0 rounded-4 overflow-hidden">
                 <img
-                  src={`http://localhost:5001/api/menu/image/${item._id}`}
+                  src={`${BACKEND_URL}/api/menu/image/${item._id}`}
                   alt={item.name}
                   className="card-img-top"
                   style={{
@@ -141,7 +143,10 @@ const UserMenu = () => {
       {!loadingOrderStatus && (
         <div className="text-center mt-4">
           {existingOrder ? (
-            <div className="alert alert-danger fw-bold mx-auto" style={{ maxWidth: "400px" }}>
+            <div
+              className="alert alert-danger fw-bold mx-auto"
+              style={{ maxWidth: "400px" }}
+            >
               🚫 You already have an active order for this table. <br />
               Please wait until it's completed.
             </div>
