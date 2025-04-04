@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { FaCoffee, FaHamburger, FaUtensils } from "react-icons/fa";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "../app.css"; // Add your custom styles
+import "../App.css"; // Add your custom styles
 import menu1 from "../assets/menu-1.jpg";
 import menu2 from "../assets/menu-2.jpg";
 import menu3 from "../assets/menu-3.jpg";
