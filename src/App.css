@@ -1,0 +1,24 @@
+.btn:hover {
+    background-color: #fcd3c9 !important; /* Slightly darker pink on hover */
+    color: #e04b35 !important; /* Darker red text */
+    transform: scale(1.05);
+    transition: all 0.3s ease-in-out;
+  }
+  .text-custom-yellow {
+    color: #f55540 !important; /* Change this hex code to your preferred yellow */
+  }
+  
+  .border-custom-yellow {
+    border-color: #f55540 !important;
+  }
+
+  .dark-mode {
+    background-color: #121212;
+    color: #ffffff;
+}
+.dark-mode .card {
+    background-color: #1e1e1e;
+    color: #ffffff;
+}
+
+  
