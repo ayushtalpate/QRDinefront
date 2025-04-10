@@ -10,30 +10,89 @@ const OrderConfirm = () => {
   const [paymentMethod, setPaymentMethod] = useState("payLater");
 
   const handleSubmit = async () => {
-    try {
-      const response = await fetch(`${BACKEND_URL}/api/orders`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          tableId,
-          items: cart,
-          paymentMethod,
-        }),
-      });
-
-      if (response.ok) {
-        alert("✅ Order placed successfully!");
-        localStorage.removeItem("cart");
-        navigate(`/table/${tableId}`);
-      } else {
-        const errorData = await response.json();
-        alert(`❌ Failed to place order: ${errorData.message || "Unknown error"}`);
+    if (paymentMethod === "online") {
+      try {
+        // Call backend to create Razorpay order
+        const orderRes = await fetch(`${BACKEND_URL}/api/razorpay/order`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ amount: calculateTotal() * 100 }) // Razorpay expects amount in paise
+        });
+  
+        const orderData = await orderRes.json();
+  
+        const options = {
+          key: "rzp_test_QQHn9K2KaeTnxh", // Replace with your Razorpay key
+          amount: orderData.amount,
+          currency: "INR",
+          name: "QR Dine",
+          description: "Order Payment",
+          order_id: orderData.id,
+          handler: async function (response) {
+            // On successful payment
+            const confirmRes = await fetch(`${BACKEND_URL}/api/orders`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                tableId,
+                items: cart,
+                paymentMethod: "online",
+                paymentDetails: response, // you can pass the Razorpay response to backend for verification
+              }),
+            });
+  
+            if (confirmRes.ok) {
+              alert("✅ Payment successful & order placed!");
+              localStorage.removeItem("cart");
+              navigate(`/table/${tableId}`);
+            } else {
+              alert("❌ Order creation failed after payment.");
+            }
+          },
+          prefill: {
+            name: "Customer",
+            email: "test@example.com",
+            contact: "9999999999",
+          },
+          theme: {
+            color: "#f55540",
+          },
+        };
+  
+        const rzp = new window.Razorpay(options);
+        rzp.open();
+      } catch (error) {
+        console.error("Payment error:", error);
+        alert("❌ Payment failed.");
       }
-    } catch (error) {
-      console.error("Order error:", error);
-      alert("❌ Network error while placing order.");
+    } else {
+      // Pay Later logic
+      try {
+        const response = await fetch(`${BACKEND_URL}/api/orders`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            tableId,
+            items: cart,
+            paymentMethod: "payLater",
+          }),
+        });
+  
+        if (response.ok) {
+          alert("✅ Order placed successfully!");
+          localStorage.removeItem("cart");
+          navigate(`/table/${tableId}`);
+        } else {
+          const errorData = await response.json();
+          alert(`❌ Failed to place order: ${errorData.message || "Unknown error"}`);
+        }
+      } catch (error) {
+        console.error("Order error:", error);
+        alert("❌ Network error while placing order.");
+      }
     }
   };
+  
 
   const calculateTotal = () => {
     return cart.reduce((total, item) => total + item.price * item.quantity, 0);
