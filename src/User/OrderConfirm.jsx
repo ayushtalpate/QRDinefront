@@ -12,17 +12,16 @@ const OrderConfirm = () => {
   const handleSubmit = async () => {
     if (paymentMethod === "online") {
       try {
-        // Call backend to create Razorpay order
         const orderRes = await fetch(`${BACKEND_URL}/api/razorpay/order`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ amount: calculateTotal() * 100 }) // Razorpay expects amount in paise
+          body: JSON.stringify({ amount: calculateTotal() * 100 }) 
         });
   
         const orderData = await orderRes.json();
   
         const options = {
-          key: "rzp_test_QQHn9K2KaeTnxh", // Replace with your Razorpay key
+          key: "rzp_test_QQHn9K2KaeTnxh",
           amount: orderData.amount,
           currency: "INR",
           name: "QR Dine",
@@ -37,7 +36,7 @@ const OrderConfirm = () => {
                 tableId,
                 items: cart,
                 paymentMethod: "online",
-                paymentDetails: response, // you can pass the Razorpay response to backend for verification
+                paymentDetails: response, 
               }),
             });
   
