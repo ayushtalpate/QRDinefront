@@ -129,7 +129,7 @@ const QRCodePrinter = () => {
                 <div className="card-body">
                   <h5 className="card-title">Table {qrCode.tableId}</h5>
                   <button
-                    className="btn btn-danger mr-2"
+                    className="btn btn-danger mr-2 me-2"
                     onClick={() => handleDeleteQRCode(qrCode.tableId)}
                   >
                     Delete

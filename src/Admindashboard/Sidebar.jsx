@@ -8,6 +8,8 @@ import {
   FaListAlt,
   FaSignOutAlt,
 } from "react-icons/fa";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUserShield, faChartLine } from "@fortawesome/free-solid-svg-icons";
 
 const Sidebar = () => {
   const navigate = useNavigate();
@@ -21,7 +23,11 @@ const Sidebar = () => {
 
   return (
     <div className="d-flex flex-column vh-100 p-3 bg-white shadow-sm border-end">
-      <h3 className="text-center fw-bold text-danger mb-4">Admin Panel</h3>
+      {/* Admin Panel Heading */}
+      <h5 className="text-center fw-bold text-danger mb-4 d-flex justify-content-center align-items-center gap-2">
+        <FontAwesomeIcon icon={faUserShield} />
+        Admin Panel
+      </h5>
 
       <ul className="nav nav-pills flex-column mb-auto">
         <li className="nav-item mb-2">
@@ -64,7 +70,7 @@ const Sidebar = () => {
               isActive("/admin-dashboard/add-menu") ? "active bg-danger text-white" : "text-dark"
             }`}
           >
-            <FaUtensils /> Add  Item
+            <FaUtensils /> Add Item
           </Link>
         </li>
 
@@ -76,6 +82,17 @@ const Sidebar = () => {
             }`}
           >
             <FaListAlt /> View Menu
+          </Link>
+        </li>
+
+        <li className="nav-item mb-2">
+          <Link
+            to="/admin-dashboard/revenue-report"
+            className={`nav-link d-flex align-items-center gap-2 ${
+              isActive("/admin-dashboard/revenue-report") ? "active bg-danger text-white" : "text-dark"
+            }`}
+          >
+            <FontAwesomeIcon icon={faChartLine} /> Revenue
           </Link>
         </li>
       </ul>

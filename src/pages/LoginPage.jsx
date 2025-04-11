@@ -12,7 +12,7 @@ const LoginPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (credentials.username === "admin" && credentials.password === "12345") {
+    if (credentials.username === "qrdine" && credentials.password === "pass@123") {
       navigate("/admin-dashboard"); // Redirect to Admin Dashboard
     } else {
       setError("❌ Invalid Username or Password");

@@ -9,6 +9,7 @@ import Orders from "./Orders";
 import MenuList from "./MenuList";
 import AddMenuItem from "./AddMenuItem";
 import AdminOrderList from "./AdminOrderList";
+import DailyRevenueReport from "./DailyRevenueReport";
 
 // ✅ Environment URLs
 const FRONTEND_URL = import.meta.env.VITE_FRONTEND_URL;
@@ -80,14 +81,17 @@ const Dashboard = () => {
           <div className="flex-grow-1 p-4">
             <Routes>
               <Route path="/" element={<AdminHomePage />} />
-              <Route path="/admin-dashboard" element={<AdminHomePage />} />
-              <Route path="/qrcode" element={<QRCodePrinter />} />
-              <Route path="/orders" element={<AdminOrderList />} />
-              <Route path="/add-menu" element={<AddMenuItem onAdd={addItem} />} />
+              <Route path="admin-dashboard" element={<AdminHomePage />} />
+              <Route path="qrcode" element={<QRCodePrinter />} />
+              <Route path="orders" element={<AdminOrderList />} />
+              <Route path="add-menu" element={<AddMenuItem onAdd={addItem} />} />
               <Route
                 path="/menu-list"
                 element={<MenuList menuItems={menuItems} setMenuItems={setMenuItems} onDelete={handleDelete} />}
               />
+              <Route path="revenue-report" element={<DailyRevenueReport />} />
+
+
             </Routes>
           </div>
         </div>

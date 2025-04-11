@@ -1,54 +1,58 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUtensils } from '@fortawesome/free-solid-svg-icons';
+import logo from '../assets/qrdine.png';
 
 function Navbar() {
   const location = useLocation();
 
-  return (
-    <nav className="navbar navbar-expand-lg bg-body-tertiary border-bottom  shadow-current">
-      <div className="container-fluid">
-        {/* Brand Logo and Name */}
-        <Link className="navbar-brand d-flex align-items-center d-lg-none" to="/">
-          <FontAwesomeIcon icon={faUtensils} style={{ color: "#f55540", height: "45px" }} />
-          <span className="fw-semibold ms-2 fs-3">Restoran</span>
-        </Link>
+  const navItems = [
+    { name: "Home", path: "/" },
+    { name: "About", path: "/about" },
+    { name: "Service", path: "/service" },
+    { name: "Menu", path: "/menu" },
+  ];
 
-        {/* Navbar Toggler for Mobile */}
-        <button 
-          className="navbar-toggler" 
-          type="button" 
-          data-bs-toggle="collapse" 
-          data-bs-target="#navbarSupportedContent" 
-          aria-controls="navbarSupportedContent" 
-          aria-expanded="false" 
+  return (
+    <nav className="navbar navbar-expand-lg bg-white shadow-sm border-bottom sticky-top">
+      <div className="container-fluid px-3 px-lg-5">
+
+        {/* Mobile toggler on the right */}
+        <button
+          className="navbar-toggler ms-auto"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNavDropdown"
+          aria-controls="navbarNavDropdown"
+          aria-expanded="false"
           aria-label="Toggle navigation"
         >
-          <span className="navbar-toggler-icon"></span>
+          <span className="navbar-toggler-icon" />
         </button>
 
-        {/* Navbar Items */}
-        <div className="collapse navbar-collapse justify-content-center" id="navbarSupportedContent">
-          <Link className="navbar-brand d-flex align-items-center d-none d-lg-flex" to="/">
-            <FontAwesomeIcon icon={faUtensils} style={{ color: "#f55540", height: "45px" }} />
-            <span className="fw-semibold ms-2 fs-3">Restoran</span>
-          </Link>
+        {/* Centered navbar content */}
+        <div className="collapse navbar-collapse justify-content-center" id="navbarNavDropdown">
+          <ul className="navbar-nav align-items-center gap-lg-4 text-center">
 
-          <ul className="navbar-nav text-center">
-            {[
-              { name: "Home", path: "/" },
-              { name: "About", path: "/about" },
-              { name: "Service", path: "/service" },
-              { name: "Menu", path: "/menu" },
-            ].map((item) => (
+            {/* Centered Logo & Brand */}
+            <li className="nav-item d-flex align-items-center gap-2">
+              <Link className="navbar-brand d-flex align-items-center gap-2" to="/">
+                <img
+                  src={logo}
+                  alt="Qrdine Logo"
+                  style={{ height: "50px", objectFit: "contain" }}
+                />
+                <span className="fw-bold fs-4 text-dark mb-0">Qrdine</span>
+              </Link>
+            </li>
+
+            {/* Navigation Links */}
+            {navItems.map((item) => (
               <li className="nav-item" key={item.path}>
-                <Link 
-                  className={`nav-link ${location.pathname === item.path ? "active" : ""}`} 
+                <Link
                   to={item.path}
+                  className={`nav-link ${location.pathname === item.path ? "active text-danger" : "text-dark"}`}
                   style={{
-                    color: location.pathname === item.path ? "#f55540" : "inherit",
-                    fontWeight: location.pathname === item.path ? "600" : "normal"
+                    fontWeight: location.pathname === item.path ? "600" : "normal",
                   }}
                 >
                   {item.name}
@@ -56,21 +60,24 @@ function Navbar() {
               </li>
             ))}
 
-            <li className="nav-item">
+            {/* Login Button */}
+            <li className="nav-item mt-2 mt-lg-0">
               <Link
                 to="/login"
-                className="btn rounded-pill px-4 py-2"
+                className="btn btn-sm btn-pill px-4 py-2"
                 style={{
                   backgroundColor: "#fde5df",
                   color: "#f55540",
                   border: "none",
                   fontWeight: "600",
-                  fontSize: "16px"
+                  fontSize: "16px",
+                  borderRadius: "999px",
                 }}
               >
-                Sign In
+                Log In
               </Link>
             </li>
+
           </ul>
         </div>
       </div>

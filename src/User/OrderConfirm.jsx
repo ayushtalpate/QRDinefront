@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import Lottie from "lottie-react";
+import successAnimation from "../animations/placedoeder.json"; // Make sure the path is correct
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5001";
 
@@ -8,6 +10,7 @@ const OrderConfirm = () => {
   const navigate = useNavigate();
   const cart = JSON.parse(localStorage.getItem("cart")) || [];
   const [paymentMethod, setPaymentMethod] = useState("payLater");
+  const [orderSuccess, setOrderSuccess] = useState(false);
 
   const handleSubmit = async () => {
     if (paymentMethod === "online") {
@@ -15,20 +18,19 @@ const OrderConfirm = () => {
         const orderRes = await fetch(`${BACKEND_URL}/api/razorpay/order`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ amount: calculateTotal() * 100 }) 
+          body: JSON.stringify({ amount: calculateTotal() * 100 }),
         });
-  
+
         const orderData = await orderRes.json();
-  
+
         const options = {
-          key: "rzp_test_QQHn9K2KaeTnxh",
+          key: "rzp_test_QQHn9K2KaeTnxh", // Replace with your key
           amount: orderData.amount,
           currency: "INR",
           name: "QR Dine",
           description: "Order Payment",
           order_id: orderData.id,
           handler: async function (response) {
-            // On successful payment
             const confirmRes = await fetch(`${BACKEND_URL}/api/orders`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
@@ -36,14 +38,16 @@ const OrderConfirm = () => {
                 tableId,
                 items: cart,
                 paymentMethod: "online",
-                paymentDetails: response, 
+                paymentDetails: response,
               }),
             });
-  
+
             if (confirmRes.ok) {
-              alert("✅ Payment successful & order placed!");
-              localStorage.removeItem("cart");
-              navigate(`/table/${tableId}`);
+              setOrderSuccess(true);
+              setTimeout(() => {
+                localStorage.removeItem("cart");
+                navigate(`/table/${tableId}`);
+              }, 3000);
             } else {
               alert("❌ Order creation failed after payment.");
             }
@@ -57,7 +61,7 @@ const OrderConfirm = () => {
             color: "#f55540",
           },
         };
-  
+
         const rzp = new window.Razorpay(options);
         rzp.open();
       } catch (error) {
@@ -65,7 +69,6 @@ const OrderConfirm = () => {
         alert("❌ Payment failed.");
       }
     } else {
-      // Pay Later logic
       try {
         const response = await fetch(`${BACKEND_URL}/api/orders`, {
           method: "POST",
@@ -76,11 +79,13 @@ const OrderConfirm = () => {
             paymentMethod: "payLater",
           }),
         });
-  
+
         if (response.ok) {
-          alert("✅ Order placed successfully!");
-          localStorage.removeItem("cart");
-          navigate(`/table/${tableId}`);
+          setOrderSuccess(true);
+          setTimeout(() => {
+            localStorage.removeItem("cart");
+            navigate(`/table/${tableId}`);
+          }, 3000);
         } else {
           const errorData = await response.json();
           alert(`❌ Failed to place order: ${errorData.message || "Unknown error"}`);
@@ -91,11 +96,22 @@ const OrderConfirm = () => {
       }
     }
   };
-  
 
   const calculateTotal = () => {
     return cart.reduce((total, item) => total + item.price * item.quantity, 0);
   };
+
+  if (orderSuccess) {
+    return (
+      <div className="d-flex justify-content-center align-items-center" style={{ minHeight: "80vh" }}>
+        <div className="text-center">
+          <Lottie animationData={successAnimation} style={{ width: 300, height: 300 }} loop={false} />
+          <h5 className="mt-3 text-success fw-bold">Order Placed Successfully!</h5>
+          <p className="text-muted">Redirecting to menu...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="container mt-4">
