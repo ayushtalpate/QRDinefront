@@ -17,6 +17,14 @@ function Navbar() {
       <div className="container-fluid px-3 px-lg-5">
 
         {/* Mobile toggler on the right */}
+        <Link className="navbar-brand d-flex align-items-center gap-2  d-lg-none" to="/">
+                <img
+                  src={logo}
+                  alt="Qrdine Logo"
+                  style={{ height: "50px", objectFit: "contain" }}
+                />
+                <span className="fw-bold fs-4 text-dark mb-0">Qrdine</span>
+              </Link>
         <button
           className="navbar-toggler ms-auto"
           type="button"
